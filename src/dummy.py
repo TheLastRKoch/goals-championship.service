@@ -1,41 +1,40 @@
-from services.service_date import ServiceDate
-from services.service_request import ServiceRequest
+from states.state_calculate_score import StateCalculateScore
+from services.service_jmespath import ServiceJMESpath
+from services.service_file import ServiceFile
+from dotenv import load_dotenv
 from os import environ as env
 import json
 
 
-def run2():
-    # Services
-    service_request = ServiceRequest()
-    service_date = ServiceDate()
-
-    headers = {
-        "Authorization": f"Bearer {env['TODOIST_API_SECRET']}"
-    }
-
-    limit = int(env["API_LIMIT"])
-    offset = 0
-    since = service_date.first_day_month()
-    task_list = []
-    while (True):
-        url = env["BASE_API_URL"].format(
-            limit=limit,
-            offset=offset,
-            since=since
-        )
-        r = service_request.get(headers, None, url, None)
-        body = json.loads(r.text)
-        task_list += body["items"]
-        offset += limit
-        if len(body["items"]) == 0:
-            break
-    with open("resources/view.json", "w") as outfile:
-        outfile.write(json.dumps(task_list))
-
-
 def run():
-    pass
+    import json
+    your_list_of_dict = [{"test": "test", "score": 1},
+                         {"test": "test1", "score": 2}]
+    with open("resources/view.txt", 'w') as f:
+        json.dump(your_list_of_dict, f)
+
+
+def run2():
+    view = json.loads(env["LIST_TASK_CATEGORY"])
+    stop = ""
+
+
+def run3():
+    service_jmespath = ServiceJMESpath()
+    service_file = ServiceFile()
+
+    custom_json = json.loads(service_file.read_text_file("resources/view.json"))
+    view = service_jmespath.expression("[].id", custom_json)
+    stop = ""
+
+    
 
 
 if __name__ == "__main__":
-    run2()
+    # Load env variables
+    load_dotenv()
+
+    # State Services
+    calculate_score = StateCalculateScore()
+    # calculate_score.run("Febrero")
+    run3()

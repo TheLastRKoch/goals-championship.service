@@ -1,5 +1,10 @@
-from requests_html import HTMLSession
+from states.state_start import StateStart
+from dotenv import load_dotenv
 
 
-session = HTMLSession()
-r = session.get('https://python.org/')
+# Load env variables
+load_dotenv()
+
+# State Definition
+start = StateStart()
+start.run()
