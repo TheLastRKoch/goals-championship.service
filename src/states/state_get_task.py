@@ -6,13 +6,14 @@ import json
 
 class StateGetTasks:
 
-    def run(self):
+    # TODO: Missing Token validation
+    def run(self, token):
         # Define Services
         service_request = ServiceRequest()
         service_date = ServiceDate()
 
         headers = {
-            "Authorization": f"Bearer {env['TODOIST_API_SECRET']}"
+            "Authorization": f"Bearer {token}"
         }
 
         limit = int(env["API_LIMIT"])

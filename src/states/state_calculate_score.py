@@ -5,6 +5,7 @@ import json
 
 class StateCalculateScore:
 
+    # TODO: Missing the period selection
     def run(self, task_list, month_label):
 
         # Service Definition
