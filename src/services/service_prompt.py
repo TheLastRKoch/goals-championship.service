@@ -1,7 +1,7 @@
 from services.service_command import ServiceCommand
 from services.service_file import ServiceFile
 from os import environ as env
-import getpass
+import pwinput
 
 
 class ServicePrompt:
@@ -16,7 +16,7 @@ class ServicePrompt:
         print(greating_message)
 
     def ask_user_token(self):
-        return getpass.getpass("\n\nPlease type the user token\n")
+        return pwinput.pwinput(prompt="\n\nPlease type the user token\n", mask="*")
 
     def ask_month_label(self):
         return input("\n\nPlease type the month label to query\n")
@@ -24,5 +24,9 @@ class ServicePrompt:
     def ask_period(self):
         return input("\n\nPlease type the period to query (DD/MM/YYYY)\n")
 
+    def message_wait(self, message):
+        print("\n"+message+"\n\n")
+        input("Press Any key to continue ...")
+
     def message(self, text):
-        print(text)
+        print("\n"+text+"\n\n")
