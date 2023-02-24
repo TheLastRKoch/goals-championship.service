@@ -21,8 +21,8 @@ class ServicePrompt:
     def ask_month_label(self):
         return input("\n\nPlease type the month label to query\n")
 
-    def ask_period(self):
-        return input("\n\nPlease type the period to query (DD/MM/YYYY)\n")
+    def ask_time_period(self):
+        return input("\n\nPlease type the period to query (YYYY-M-D)\n")
 
     def message_wait(self, message):
         print("\n"+message+"\n\n")

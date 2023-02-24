@@ -1,4 +1,3 @@
-from services.service_request import ServiceRequest
 from states.state_calculate_score import StateCalculateScore
 from services.service_prompt import ServicePrompt
 from states.state_get_task import StateGetTasks
@@ -21,10 +20,10 @@ class StateStart:
 
                 service_prompt.welcome()
                 token = service_prompt.ask_user_token()
-
                 month_label = service_prompt.ask_month_label()
+                time_period = service_prompt.ask_time_period()
 
-                task_list = get_tasks.run(token)
+                task_list = get_tasks.run(token, time_period)
                 score_list, total_score = calculate_score.run(
                     task_list, month_label)
 

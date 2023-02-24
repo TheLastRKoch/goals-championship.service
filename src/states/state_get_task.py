@@ -8,10 +8,9 @@ import json
 class StateGetTasks:
 
     # TODO: Missing Token validation
-    def run(self, token):
+    def run(self, token, time_period):
         # Define Services
         service_request = ServiceRequest()
-        service_date = ServiceDate()
         service_prompt = ServicePrompt()
 
         headers = {
@@ -28,7 +27,7 @@ class StateGetTasks:
         # Obtain tasks
         limit = int(env["API_LIMIT"])
         offset = 0
-        since = service_date.first_day_month()
+        since = time_period+"T00:00:00"
         task_list = []
         while (True):
             url = env["BASE_GET_TASK_URL"].format(
