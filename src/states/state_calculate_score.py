@@ -5,8 +5,7 @@ import json
 
 class StateCalculateScore:
 
-    # TODO: Missing the period selection
-    def run(self, task_list, month_label):
+    def run(self, task_list):
 
         # Service Definition
         service_jmespath = ServiceJMESpath()
@@ -17,7 +16,6 @@ class StateCalculateScore:
 
         for category in score_list:
             query = env["CATEGORY_TASK_QUERY"].format(
-                month_label=month_label,
                 category=category["tag"]
             )
             category_task = service_jmespath.expression(query, task_list)
@@ -26,9 +24,7 @@ class StateCalculateScore:
             total_score += score
 
         # Calculate simple score
-        query = env["SIMPLE_TASK_QUERY"].format(
-            month_label=month_label
-        )
+        query = env["SIMPLE_TASK_QUERY"]
         simple_task = service_jmespath.expression(query, task_list)
         score = len(simple_task) * 1
         score_list.append(

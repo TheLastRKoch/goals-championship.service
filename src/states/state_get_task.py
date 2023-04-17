@@ -6,7 +6,6 @@ import json
 
 class StateGetTasks:
 
-    # TODO: Missing Token validation
     def run(self, token, time_period):
         # Define Services
         service_request = ServiceRequest()

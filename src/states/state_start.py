@@ -1,5 +1,6 @@
 from states.state_calculate_score import StateCalculateScore
 from services.service_prompt import ServicePrompt
+from states.state_filter_tasks import StateFilterTasks
 from states.state_get_task import StateGetTasks
 import json
 
@@ -17,20 +18,27 @@ class StateStart:
                 # Define States
                 get_tasks = StateGetTasks()
                 calculate_score = StateCalculateScore()
+                filter_tasks = StateFilterTasks()
 
                 service_prompt.welcome()
                 token = service_prompt.ask_user_token()
                 month_label = service_prompt.ask_month_label()
                 time_period = service_prompt.ask_time_period()
 
+                # Get all task from API
                 task_list = get_tasks.run(token, time_period)
+
+                # Filter by Label
+                filtered_task_list = filter_tasks.run(task_list, month_label)
+
                 score_list, total_score = calculate_score.run(
-                    task_list, month_label)
+                    filtered_task_list)
 
                 service_prompt.message("\n\nFinal Score:\n"+str(total_score))
-                service_prompt.message("\n\nScore summaty:\n"+str(score_list))
-                service_prompt.message(
-                    "\n\nAll tasks:\n"+json.dumps(task_list, indent=2))
+                service_prompt.print_score_list(score_list)
+                if service_prompt.ask_show_complete_json() == "y":
+                    service_prompt.message(
+                        "\n\nAll tasks:\n"+json.dumps(task_list, indent=2))
 
                 keep = False
             except Exception as err:
