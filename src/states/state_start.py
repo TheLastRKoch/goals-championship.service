@@ -32,7 +32,7 @@ class StateStart:
                 filtered_task_list = filter_tasks.run(task_list, month_label)
 
                 score_list, total_score = calculate_score.run(
-                    filtered_task_list)
+                    filtered_task_list, month_label)
 
                 service_prompt.message("\n\nFinal Score:\n"+str(total_score))
                 service_prompt.print_score_list(score_list)

@@ -5,7 +5,7 @@ import json
 
 class StateCalculateScore:
 
-    def run(self, task_list):
+    def run(self, task_list, month_label):
 
         # Service Definition
         service_jmespath = ServiceJMESpath()
@@ -16,6 +16,7 @@ class StateCalculateScore:
 
         for category in score_list:
             query = env["CATEGORY_TASK_QUERY"].format(
+                month_label=month_label,
                 category=category["tag"]
             )
             category_task = service_jmespath.expression(query, task_list)
