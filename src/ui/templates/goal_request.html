@@ -91,7 +91,7 @@
         <br>
         <h1>Please fill the required infomation</h1>
         <div class="bg-light p-5 rounded">
-            <form>
+            <form accept="{{ url_for('goals')}}" method="POST">
                 <div class="mb-3">
                     <label for="inputMonthLabel" class="form-label">Month Label</label>
                     <input class="form-control" id="inputMonthLabel" aria-describedby="emailHelp">

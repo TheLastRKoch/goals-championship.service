@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,21 +11,21 @@
             color: #fff;
             font-family: Arial, sans-serif;
         }
-        
+
         .container {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
-        
+
         .password-box {
             background-color: #333;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        
+
         .password-input {
             width: 300px;
             padding: 10px;
@@ -33,7 +34,7 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
-        
+
         .submit-button {
             background-color: #555;
             color: #fff;
@@ -45,12 +46,16 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="password-box">
-            <input type="password" class="password-input" placeholder="Enter password">
-            <button class="submit-button">Submit</button>
+            <form action="{{ url_for('login') }}" method="POST">
+                <input id="token" name="token" type="password" class="password-input" placeholder="Enter password">
+                <input class="submit-button" type="submit" value="Submit">
+            </form>
         </div>
     </div>
 </body>
+
 </html>

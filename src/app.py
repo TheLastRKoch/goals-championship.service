@@ -1,5 +1,6 @@
+from controllers.goals import GoalController, GoalListController
 from controllers.index import IndexController
-from states.state_start import StateStart
+from controllers.login import LoginController
 from dotenv import load_dotenv
 from flask import Flask
 import os
@@ -7,15 +8,25 @@ import os
 # Load env variables
 load_dotenv()
 
-# State Definition
-# start = StateStart()
-# start.run()
-
-
 app = Flask(__name__, template_folder="ui/templates")
 
+app.secret_key = os.getenv("SECRET_KEY")
+
 app.add_url_rule(
-    "/", view_func=IndexController.as_view("home"), methods=['GET'])
+    "/", view_func=IndexController.as_view("home"),
+    methods=['GET'])
+
+app.add_url_rule(
+    "/login", view_func=LoginController.as_view("login"),
+    methods=['GET', 'POST'])
+
+app.add_url_rule(
+    "/goals", view_func=GoalController.as_view("goals"),
+    methods=['GET', 'POST'])
+
+app.add_url_rule(
+    "/goal/list", view_func=GoalListController.as_view("goalList"),
+    methods=['GET', 'POST'])
 
 if __name__ == "__main__":
     app.run(
