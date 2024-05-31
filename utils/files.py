@@ -1,4 +1,4 @@
-class ServiceFile:
+class UtilFile:
 
     def read_text_file(self, path):
         with open(path) as f:

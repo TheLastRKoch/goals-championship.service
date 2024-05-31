@@ -1,7 +1,7 @@
 import requests
 
 
-class ServiceRequest():
+class UtilWebRequest():
 
     def __base_request(self, method, headers, parameters, url, body):
         return requests.request(
@@ -15,8 +15,5 @@ class ServiceRequest():
     def get(self, headers, parameters, url, body):
         return self.__base_request("GET", headers, parameters, url, body)
 
-    def check_auth(self, headers, parameters, url, body):
-        r = self.__base_request("GET", headers, parameters, url, body)
-        if r.status_code // 10 == 20:
-            return True
-        return False
+    def post(self, headers, parameters, url, body):
+        return self.__base_request("POST", headers, parameters, url, body)

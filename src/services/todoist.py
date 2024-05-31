@@ -1,14 +1,24 @@
+from services.service_jmespath import ServiceJMESpath
+from utils.webrequest import UtilWebRequest
 from services.service_prompt import ServicePrompt
-from services.service_request import ServiceRequest
 from os import environ as env
 import json
 
 
-class StateGetTasks:
+class ServiceTodoist:
 
-    def run(self, token, time_period):
+    def filter_by_date(self, task_list, month_label):
+        # Service definition
+        service_jmespath = ServiceJMESpath()
+
+        return service_jmespath.expression(
+            env['LABEL_QUERY'].format(label=month_label),
+            task_list
+        )
+
+    def get_task_list(self, token, time_period):
         # Define Services
-        service_request = ServiceRequest()
+        service_request = UtilWebRequest()
         service_prompt = ServicePrompt()
 
         headers = {

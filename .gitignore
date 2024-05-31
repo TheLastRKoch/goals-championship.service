@@ -132,4 +132,4 @@ dmypy.json
 # IDE
 .ve
 .vscode
-/src/dummy.py
+src/dummy.py

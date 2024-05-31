@@ -2,7 +2,7 @@ from datetime import datetime
 from os import environ as env
 
 
-class ServiceDate():
+class UtilsDate():
     def timestamp(self):
         return datetime.now().strftime(env["DATE_FORMAT"])
 

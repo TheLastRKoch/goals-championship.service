@@ -3,5 +3,5 @@ import os
 
 class ServiceCommand:
 
-    def clear_screen(self):
+    def clear(self):
         os.system("clear")

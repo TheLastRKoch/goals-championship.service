@@ -3,7 +3,7 @@ from os import environ as env
 import json
 
 
-class StateCalculateScore:
+class ServiceCalculateScore:
 
     def run(self, task_list, month_label):
 
