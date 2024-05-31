@@ -10,23 +10,38 @@ load_dotenv()
 
 app = Flask(__name__, template_folder="ui/templates")
 
+endpoint_list = [
+    {
+        "path": "/",
+        "source": IndexController.as_view("home"),
+        "methods": ['GET']
+    },
+    {
+        "path": "/login",
+        "source": LoginController.as_view("login"),
+        "methods": ['GET', 'POST']
+    },
+    {
+        "path": "/goals",
+        "source": GoalController.as_view("goals"),
+        "methods": ['GET', 'POST']
+    },
+    {
+        "path": "/goal/list",
+        "source": GoalListController.as_view("goalList"),
+        "methods": ['GET', 'POST']
+    }
+]
+
+for endpoint in endpoint_list:
+
+    app.add_url_rule(
+        endpoint["path"],
+        view_func=endpoint["source"],
+        methods=endpoint["methods"]
+    )
+
 app.secret_key = os.getenv("SECRET_KEY")
-
-app.add_url_rule(
-    "/", view_func=IndexController.as_view("home"),
-    methods=['GET'])
-
-app.add_url_rule(
-    "/login", view_func=LoginController.as_view("login"),
-    methods=['GET', 'POST'])
-
-app.add_url_rule(
-    "/goals", view_func=GoalController.as_view("goals"),
-    methods=['GET', 'POST'])
-
-app.add_url_rule(
-    "/goal/list", view_func=GoalListController.as_view("goalList"),
-    methods=['GET', 'POST'])
 
 if __name__ == "__main__":
     app.run(
