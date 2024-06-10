@@ -94,11 +94,7 @@
             <form accept="{{ url_for('goals')}}" method="POST">
                 <div class="mb-3">
                     <label for="inputMonthLabel" class="form-label">Month Label</label>
-                    <input class="form-control" id="inputMonthLabel" aria-describedby="emailHelp">
-                </div>
-                <div class="mb-3">
-                    <label for="inputDatePeriod" class="form-label">Date period</label>
-                    <input class="form-control" id="inputDatePeriod" aria-describedby="emailHelp" placeholder="YYYY-MM-DD">
+                    <input type=date name="filterDate" class="form-control" id="filterDate" aria-describedby="emailHelp">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>

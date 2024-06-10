@@ -54,7 +54,7 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Logout</a>
+                            <a class="nav-link active" aria-current="page" href="/account/logout">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -92,25 +92,25 @@
                 <button type="button" class="btn btn-outline-success">Download</button>
               </div>
             <div class="col-sm-8 py-5 mx-auto">
+                
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Header 1</th>
-                            <th>Header 2</th>
-                            <th>Header 3</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Data 1</td>
-                            <td>Data 2</td>
-                            <td>Data 3</td>
-                        </tr>
-                        <tr>
-                            <td>Data 4</td>
-                            <td>Data 5</td>
-                            <td>Data 6</td>
-                        </tr>
+                            <th>Completed at</th>
+                            <th>Description</th>
+                            <th>Project</th>
+                            <th>Score</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in task_list %}
+                                    <tr>
+                                        <td>{{ task["Completed at"] }}</td>
+                                        <td>{{ task["Description"] }}</td>
+                                        <td>{{ task["Project"] }}</td>
+                                        <td>{{ task["Score"] }}</td>
+                                     </tr>
+                        {% endfor%}
                     </tbody>
                 </table>
 

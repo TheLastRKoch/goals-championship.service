@@ -14,12 +14,10 @@ class ServiceTodoist:
         }
 
         # Check token authtentication
-        if web_request.check_auth(
+        if web_request.get(
                 headers, None, env["BASE_API_URL"]+r"/get_all?limit=1", None):
-            # Log Auth successfully
-            pass
-        else:
-            raise Exception("Something went wrong while authenticating")
+            return True
+        return False
 
     def get_project_list(self, token):
         # Define Services
