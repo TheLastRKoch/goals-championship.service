@@ -14,8 +14,9 @@ class ServiceTodoist:
         }
 
         # Check token authtentication
-        if web_request.get(
-                headers, None, env["BASE_API_URL"]+r"/get_all?limit=1", None):
+        r = web_request.get(
+                headers, None, env["BASE_API_URL"]+r"/get_all?limit=1", None)
+        if r:    
             return True
         return False
 
