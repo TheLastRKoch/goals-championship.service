@@ -5,33 +5,35 @@
 <div class="container mt-4">
     <br>
     <h1>Goal list</h1>
-    <div class="bg-light p-5 rounded">
-        <div class="text-right">
-            <a type="button" href="/goal/list/download" class="btn btn-outline-success">Download</a>
+    <div class="bg-light p-5 rounded mt-4">
+        <div class="row">
+            <div class="text-right">
+                <a type="button" href="/goal/list/download" class="btn btn-outline-success">Download</a>
+            </div>
         </div>
-        <div class="col-sm-8 py-5 mx-auto">
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Completed at</th>
-                        <th>Description</th>
-                        <th>Project</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for task in task_list %}
-                    <tr>
-                        <td>{{ task["Completed at"] }}</td>
-                        <td>{{ task["Description"] }}</td>
-                        <td>{{ task["Project"] }}</td>
-                        <td>{{ task["Score"] }}</td>
-                    </tr>
-                    {% endfor%}
-                </tbody>
-            </table>
-
+        <div class="row mt-4">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Completed at</th>
+                            <th>Description</th>
+                            <th>Project</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in task_list %}
+                        <tr>
+                            <td>{{ task["Completed at"] }}</td>
+                            <td>{{ task["Description"] }}</td>
+                            <td>{{ task["Project"] }}</td>
+                            <td>{{ task["Score"] }}</td>
+                        </tr>
+                        {% endfor%}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
