@@ -1,0 +1,31 @@
+# Todoist
+BASE_API_URL = https://api.todoist.com/sync/v9/completed
+BASE_GET_PROJECTS_URL = https://api.todoist.com/rest/v2/projects
+BASE_GET_TASK_URL = https://api.todoist.com/sync/v9/completed/get_all?limit={limit}&offset={offset}&since={since}
+API_LIMIT = 100
+
+DATE_FORMAT_API = %Y-%m-%dT%H:%M:%S
+DATE_FORMAT = %d/%b/%Y %H:%M:%S
+
+# JMESPath
+LABEL_QUERY = [?contains(content,'@{label}')]
+SIMPLE_TASK_QUERY = [? contains(content,'@{month_label}') && ! contains(content,'@M') && ! contains(content,'@L') && ! contains(content,'@E')]
+CATEGORY_TASK_QUERY = [? contains(content,'@{month_label}') &&  contains(content,'@{category}')]
+FORMAT_TASK_QUERY = [].{"Completed at": completed_at, Description: content, Project: name, Score: score}
+
+
+
+# Score
+SIMPLE_TASK_CATEGORY =  {tag:"", value:1} 
+LIST_TASK_CATEGORY = [{"tag":"Medium", "value":5}, {"tag":"Large", "value":10}, {"tag":"Extreme", "value":15},{"tag":"Super", "value":20}]
+
+
+# Paths
+GREATING_PATH = "resources/greeting.md" 
+TEMPLATES_PATH = templates
+
+# Flask
+HOSTNAME = 0.0.0.0
+PORT = 5000
+DEBUG = True
+SECRET_KEY = <add your secret key here>  
