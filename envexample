@@ -1,7 +1,7 @@
 # Todoist
-BASE_API_URL = https://api.todoist.com/sync/v9/completed
-BASE_GET_PROJECTS_URL = https://api.todoist.com/rest/v2/projects
-BASE_GET_TASK_URL = https://api.todoist.com/sync/v9/completed/get_all?limit={limit}&offset={offset}&since={since}
+TODOIST_API_URL = https://api.todoist.com/sync/v9/completed
+TODOIST_PROJECTS_URL = https://api.todoist.com/rest/v2/projects
+TODOIST_GET_TASK_URL = https://api.todoist.com/sync/v9/completed/get_all?limit={limit}&offset={offset}&since={since}
 API_LIMIT = 100
 
 DATE_FORMAT_API = %Y-%m-%dT%H:%M:%S

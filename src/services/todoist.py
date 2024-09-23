@@ -15,7 +15,7 @@ class ServiceTodoist:
 
         # Check token authtentication
         r = web_request.get(
-                headers, None, env["BASE_API_URL"]+r"/get_all?limit=1", None)
+                headers, None, env["TODOIST_API_URL"]+r"/get_all?limit=1", None)
         if r:    
             return True
         return False
@@ -28,7 +28,7 @@ class ServiceTodoist:
             "Authorization": f"Bearer {token}"
         }
 
-        url = env["BASE_GET_PROJECTS_URL"]
+        url = env["TODOIST_PROJECTS_URL"]
         r = web_request.get(headers, None, url, None)
         return json.loads(r.text)
 
@@ -46,7 +46,7 @@ class ServiceTodoist:
         since = time_period+"T00:00:00"
         task_list = []
         while (True):
-            url = env["BASE_GET_TASK_URL"].format(
+            url = env["TODOIST_GET_TASK_URL"].format(
                 limit=limit,
                 offset=offset,
                 since=since
