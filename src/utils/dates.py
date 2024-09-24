@@ -3,13 +3,10 @@ from os import environ as env
 
 
 class UtilsDate():
-    def timestamp(self):
-        return datetime.now().strftime(env["DATE_FORMAT"])
+    def timestamp(self, format):
+        return datetime.now().strftime(format)
 
-    def first_day_month(self):
+    def first_day_month(self, format):
         month = datetime.now().month
         year = datetime.now().year
-        return f"{year}-{month}-1T00:00:00"
-
-    def first_day_custom(self, month, year):
-        return f"{year}-{month}-1T00:00:00"
+        return datetime(year, month, 1).strftime(format)

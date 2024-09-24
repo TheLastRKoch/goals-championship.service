@@ -1,4 +1,6 @@
 from utils.webrequest import UtilWebRequest
+from utils.dates import UtilsDate
+from utils.jinja import UtilsJinja
 from os import environ as env
 import json
 
@@ -6,17 +8,37 @@ import json
 class ServiceNotion:
 
     def check_token_auth(self, token):
-        # Define Services
+        # Define Utils
         web_request = UtilWebRequest()
+        dates = UtilsDate()
+        jinja = UtilsJinja()
 
         headers = {
-            "Authorization": f"Bearer {token}"
-        }
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Notion-Version": env["NOTION_VERSION"]
+            }
 
-        # Check token authtentication
-        r = web_request.get(
-            headers, None, env["TODOIST_API_URL"]+r"/get_all?page_size=1", None)
-        if r:
+        database_id = json.loads(env["NOTION_DATABASES"])["Workitems"]
+        since = dates.first_day_month(env["NOTION_DATE_FORMAT"])
+
+        url = env["NOTION_GET_TASK_URL"].format(
+            database_id=database_id
+        )
+
+        payload = json.dumps(json.loads(jinja.render(
+            env["NOTION_PAYLOAD"],
+            page_size=1,
+            since=since
+        )))
+
+        response = web_request.post(
+            headers=headers,
+            url=url,
+            payload=payload
+        )
+
+        if response.status_code == 200:
             return True
         return False
 
