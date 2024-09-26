@@ -1,18 +1,30 @@
+# General
+API_LIMIT = 100
+DATE_FORMAT_API = %Y-%m-%dT%H:%M:%S
+TASK_FILE_NAME = goal-list-{timespan}.csv
+FILE_TIMESPAN_FORMAT = %d%m%Y%H%M%S
+
 # Todoist
 TODOIST_API_URL = https://api.todoist.com/sync/v9/completed
 TODOIST_PROJECTS_URL = https://api.todoist.com/rest/v2/projects
 TODOIST_GET_TASK_URL = https://api.todoist.com/sync/v9/completed/get_all?limit={limit}&offset={offset}&since={since}
-API_LIMIT = 100
+TODOIST_DATE_FORMAT = %d/%b/%Y %H:%M:%S
+TODOIST_TASK_QUERY = [].{"Completed at": completed_at, Description: content, Project: name, Score: score}
 
-DATE_FORMAT_API = %Y-%m-%dT%H:%M:%S
-DATE_FORMAT = %d/%b/%Y %H:%M:%S
+# Notion
+NOTION_API_URL = https://api.notion.com/v1
+NOTION_GET_TASK_URL = https://api.notion.com/v1/databases/{database_id}/query
+NOTION_DATABASES = {"Workitems":"4c7619a4c4834dca9729f0e49221ce2a"}
+NOTION_PAYLOAD = { {% if cursor %} "start_cursor": "{{cursor}}", {% endif %} "page_size": {{page_size}}, "filter": { "and": [ { "property": "Completed at", "date": { "on_or_after": "{{since}}" } }, { "property": "Stage", "select": { "equals": "Closed" } } ] } }
+NOTION_DATE_FORMAT = %Y-%m-%d
+NOTION_VERSION = 2022-06-28
+NOTION_TASK_QUERY = @.results[*].properties.{"Completed at": "Completed at".last_edited_time, Description: Name.title[0].text.content, Project: Project.select.name, Score: null}
+
 
 # JMESPath
 LABEL_QUERY = [?contains(content,'@{label}')]
 SIMPLE_TASK_QUERY = [? contains(content,'@{month_label}') && ! contains(content,'@M') && ! contains(content,'@L') && ! contains(content,'@E')]
 CATEGORY_TASK_QUERY = [? contains(content,'@{month_label}') &&  contains(content,'@{category}')]
-FORMAT_TASK_QUERY = [].{"Completed at": completed_at, Description: content, Project: name, Score: score}
-
 
 
 # Score
