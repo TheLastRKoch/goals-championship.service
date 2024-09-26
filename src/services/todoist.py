@@ -1,6 +1,9 @@
-from utils.webrequest import UtilWebRequest
 from os import environ as env
+import pandas as pd
 import json
+
+from utils.webrequest import UtilWebRequest
+from utils.jmespath import UtilsJMESpath
 
 
 class ServiceTodoist:
@@ -15,8 +18,8 @@ class ServiceTodoist:
 
         # Check token authtentication
         r = web_request.get(
-                headers, None, env["TODOIST_API_URL"]+r"/get_all?limit=1", None)
-        if r:    
+            headers, None, env["TODOIST_API_URL"]+r"/get_all?limit=1", None)
+        if r:
             return True
         return False
 
@@ -58,3 +61,17 @@ class ServiceTodoist:
             if len(body["items"]) == 0:
                 break
         return task_list
+
+    def merge_tasks_projects(self, task_list, project_list):
+        # Init utils
+        jmespath = UtilsJMESpath()
+
+        task_df = pd.DataFrame(task_list)
+        project_df = pd.DataFrame(project_list)
+
+        result_df = pd.merge(task_df, project_df,
+                             left_on="project_id", right_on="id")
+
+        result_df = json.loads(result_df.to_json(orient='records'))
+
+        return jmespath.expression(env["TODOIST_TASK_QUERY"], result_df)

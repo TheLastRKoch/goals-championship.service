@@ -17,17 +17,8 @@ class ServiceFormatter:
                 return value["value"]
         return 1
 
-    def merge_tasks_projects(self, task_list, project_list):
-        task_df = pd.DataFrame(task_list)
-        project_df = pd.DataFrame(project_list)
-
-        result_df = pd.merge(task_df, project_df,
-                             left_on="project_id", right_on="id")
-
-        result_df = json.loads(result_df.to_json(orient='records'))
-
-
     def calculate_score(self, task_list):
         task_df = pd.DataFrame(task_list)
-        task_df['Score'] = task_df['Description'].apply(lambda x: self.assign_value(x))
+        task_df['Score'] = task_df['Description'].apply(
+            lambda x: self.assign_value(x))
         return json.loads(task_df.to_json(orient='records'))
