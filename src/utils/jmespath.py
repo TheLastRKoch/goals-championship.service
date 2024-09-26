@@ -1,7 +1,7 @@
 import jmespath
 
 
-class ServiceJMESpath:
+class UtilsJMESpath:
 
     def expression(self, query, json):
         engine = jmespath.compile(query)

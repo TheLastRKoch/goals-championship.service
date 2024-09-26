@@ -1,8 +1,10 @@
-from utils.webrequest import UtilWebRequest
-from utils.dates import UtilsDate
-from utils.jinja import UtilsJinja
 from os import environ as env
 import json
+
+from utils.webrequest import UtilWebRequest
+from utils.jmespath import UtilsJMESpath
+from utils.dates import UtilsDate
+from utils.jinja import UtilsJinja
 
 
 class ServiceNotion:
@@ -17,7 +19,7 @@ class ServiceNotion:
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
             "Notion-Version": env["NOTION_VERSION"]
-            }
+        }
 
         database_id = json.loads(env["NOTION_DATABASES"])["Workitems"]
         since = dates.first_day_month(env["NOTION_DATE_FORMAT"])
@@ -43,41 +45,53 @@ class ServiceNotion:
         return False
 
     def get_task_list(self, token, time_period):
-        # Define Services
+        # Define Utils
         web_request = UtilWebRequest()
+        jinja = UtilsJinja()
+        jmespath = UtilsJMESpath()
 
         headers = {
-            "Authorization": f"Bearer {token}"
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Notion-Version": env["NOTION_VERSION"]
         }
 
-        # Obtain tasks
-        database_id = json.loads(env["NOTION_DATABASE_ID"])["Workitems"]
-        page_size = int(env["API_LIMIT"])
-        cursor = None
-        since = time_period+"T00:00:00"
         task_list = []
+        database_id = json.loads(env["NOTION_DATABASES"])["Workitems"]
+        page_size = env["API_LIMIT"]
+        cursor = None
         continue_paginating = True
-        while (continue_paginating):
+
+        while continue_paginating:
             url = env["NOTION_GET_TASK_URL"].format(
                 database_id=database_id
             )
 
-            payload = json.loads(env[NOTION_PAYLOAD]).format(
+            payload = json.dumps(json.loads(jinja.render(
+                env["NOTION_PAYLOAD"],
                 cursor=cursor,
                 page_size=page_size,
-                since=since
-            )
+                since=time_period
+            )))
 
-            response = web_request.get(
+            response = web_request.post(
                 headers=headers,
                 url=url,
-                body=json.dumps(payload)
+                payload=payload
             )
 
-            # TODO: Make the jmespath filter
+            if response.status_code != 200:
+                raise Exception(
+                    "Error during the Notion API request: "+str(response.text))
 
-            task_list += ["items"]
+            result = jmespath.expression(
+                env["NOTION_TASK_QUERY"], response.json())
+
+            task_list += result
+
             cursor = response.json()["next_cursor"]
+
             if cursor is None:
                 continue_paginating = False
+
         return task_list

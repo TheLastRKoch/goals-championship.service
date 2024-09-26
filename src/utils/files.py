@@ -8,7 +8,7 @@ class UtilFile:
             return f.read()
 
     def write_text_file(self, path, text):
-        with open(path, 'w') as f:
+        with open(path, 'a') as f:
             f.write(text)
 
     def json_to_csv(self, json):
