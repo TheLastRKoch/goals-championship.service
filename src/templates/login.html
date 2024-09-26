@@ -1,61 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Mode Website</title>
+    <title>Bootstrap Form - Dark Mode</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #222;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: #272727;
         }
-
-        .password-box {
-            background-color: #333;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .password-input {
-            width: 300px;
-            padding: 10px;
-            border: none;
-            border-radius: 3px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .submit-button {
-            background-color: #555;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 3px;
-            font-size: 16px;
-            cursor: pointer;
+        .form-container {
+            width: 100%;
+            max-width: 400px;
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="password-box">
-            <form method="POST">
-                <input id="token" name="token" type="password" class="password-input" placeholder="Enter the token">
-                <input class="submit-button" type="submit" value="Submit">
-            </form>
-        </div>
+    <div class="form-container">
+        <form method="POST" class="p-4 bg-dark rounded shadow">
+            <div class="mb-3">
+                <select class="form-select bg-secondary text-light" id="source" name="source" required>
+                    <option value="">Please select the source</option>
+                    <option value="Notion">Notion</option>
+                    <option value="Todoist">Todoist</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control bg-secondary text-light" id="token" name="token" placeholder="Please type the token" required>
+            </div>
+            <button type="submit" class="btn btn-dark w-100">Login</button>
+        </form>
     </div>
-</body>
 
+    <!-- Bootstrap JS (optional, only needed if you're using Bootstrap's JavaScript components) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var dropdown = document.getElementById('dropdown').value;
+            var password = document.getElementById('password').value;
+            console.log('Form submitted:', { dropdown: dropdown, password: password });
+            // Handle form submission logic here
+        });
+    </script>
+</body>
 </html>

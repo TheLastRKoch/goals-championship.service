@@ -9,20 +9,23 @@ from utils.jinja import UtilsJinja
 
 class ServiceNotion:
 
+    def __get_headers(self, token):
+        return {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Notion-Version": env["NOTION_VERSION"]
+        }
+
     def check_token_auth(self, token):
         # Define Utils
         web_request = UtilWebRequest()
         dates = UtilsDate()
         jinja = UtilsJinja()
 
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "Notion-Version": env["NOTION_VERSION"]
-        }
-
         database_id = json.loads(env["NOTION_DATABASES"])["Workitems"]
         since = dates.first_day_month(env["NOTION_DATE_FORMAT"])
+
+        headers = self.__get_headers(token)
 
         url = env["NOTION_GET_TASK_URL"].format(
             database_id=database_id
@@ -50,11 +53,7 @@ class ServiceNotion:
         jinja = UtilsJinja()
         jmespath = UtilsJMESpath()
 
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "Notion-Version": env["NOTION_VERSION"]
-        }
+        headers = self.__get_headers(token)
 
         task_list = []
         database_id = json.loads(env["NOTION_DATABASES"])["Workitems"]
@@ -81,8 +80,7 @@ class ServiceNotion:
             )
 
             if response.status_code != 200:
-                raise Exception(
-                    "Error during the Notion API request: "+str(response.text))
+                return None
 
             result = jmespath.expression(
                 env["NOTION_TASK_QUERY"], response.json())
