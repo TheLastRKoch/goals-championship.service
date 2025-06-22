@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template, session, redirect, request, Response
+from os import environ as env
+
 from services.formatter import ServiceFormatter
 from services.todoist import ServiceTodoist
+from services.zenkit import ServiceZenkit
 from services.notion import ServiceNotion
 from utils.files import UtilFile
 from utils.dates import UtilsDate
-from os import environ as env
+
+from flask import Blueprint, render_template, session, redirect, request, Response
 
 
 class GoalController:
@@ -12,19 +15,38 @@ class GoalController:
 
     @bp.route("/", methods=["GET"])
     def home():
-        # TODO: Redirect to /project/filter only for Zenkit
         return redirect("/goal/filter")
 
     @bp.route("/filter", methods=["GET"])
     def render_goal_filter():
         if "token" not in session:
             return render_template("index.html")
-        return render_template("goal_filter.html")
+
+        # Get the list of projects
+        project_list = []
+
+        match session["source"]:
+            case "Zenkit":
+                # Init services
+                zenkit = ServiceZenkit(session["token"])
+                project_list = zenkit.get_list_of_lists()
+                filter_projects = True
+            case _:
+                filter_projects = False
+
+        return render_template(
+            "goal_filter.html",
+            project_list=project_list,
+            filter_projects=filter_projects,
+        )
 
     @bp.route("/filter", methods=["POST"])
     def goal_filter():
-        session["filter_date"] = request.form["filterDate"]
-        return redirect("/goal/list")
+        return redirect(
+            "/goal/list?projectList={}&filterDate={}".format(
+                request.form.get("selectedProjects"), request.form.get("filterDate")
+            )
+        )
 
     @bp.route("/list", methods=["GET"])
     def goal_list():
@@ -38,7 +60,10 @@ class GoalController:
 
         source = session["source"]
         token = session["token"]
-        filter_date = session["filter_date"]
+        filter_date = request.args.get("filterDate")
+        project_list = request.args.get("projectList").split(",")
+
+        # For each project list get the goals
 
         if source == "Todoist":
             task_list = todoist.get_task_list(token, filter_date)

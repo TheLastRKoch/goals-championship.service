@@ -8,28 +8,25 @@
                 <h1>Please fill the required information</h1>
                 <div class="bg-light p-5 rounded">
                     <form action="{{ url_for('goal.goal_filter')}}" method="POST">
-                        
-                        <div class="mb-3">
-                            <label for="projectSearch" class="form-label">Projects selection</label>
-                            <div class="selected-projects-container" id="selectedProjectsContainer">
-                                <div class="text-muted" id="placeholderText">No projects selected. Search and select projects below.</div>
+
+                        {% if filter_projects %}
+                            <div class="mb-3">
+                                <label for="projectSearch" class="form-label">Projects selection</label>
+                                <div class="selected-projects-container" id="selectedProjectsContainer">
+                                    <div class="text-muted" id="placeholderText">No projects selected. Search and select projects below.</div>
+                                </div>
+                                <div class="search-dropdown">
+                                    <input type="text" class="form-control" id="projectSearch" 
+                                        placeholder="Search for projects..." autocomplete="off">
+                                    <ul class="dropdown-menu w-100" id="projectDropdown">
+                                        {% for project in project_list %}
+                                            <li><a class="dropdown-item" href="#" data-project="{{project.name}}">{{project.name}}</a></
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="selectedProjects" id="selectedProjectsInput" value="">
                             </div>
-                            <div class="search-dropdown">
-                                <input type="text" class="form-control" id="projectSearch" 
-                                       placeholder="Search for projects..." autocomplete="off">
-                                <ul class="dropdown-menu w-100" id="projectDropdown">
-                                    <li><a class="dropdown-item" href="#" data-project="website-redesign">Website Redesign</a></li>
-                                    <li><a class="dropdown-item" href="#" data-project="mobile-app">Mobile App Development</a></li>
-                                    <li><a class="dropdown-item" href="#" data-project="database-migration">Database Migration</a></li>
-                                    <li><a class="dropdown-item" href="#" data-project="api-integration">API Integration</a></li>
-                                    <li><a class="dropdown-item" href="#" data-project="security-audit">Security Audit</a></li>
-                                    <li><a class="dropdown-item" href="#" data-project="cloud-deployment">Cloud Deployment</a></li>
-                                    <li><a class="dropdown-item" href="#" data-project="performance-optimization">Performance Optimization</a></li>
-                                    <li><a class="dropdown-item" href="#" data-project="user-testing">User Testing & Research</a></li>
-                                </ul>
-                            </div>
-                            <input type="hidden" name="selectedProjects" id="selectedProjectsInput" value="">
-                        </div>
+                        {% endif %}
 
                         <div class="mb-5 mt-5">
                             <label for="filterDate" class="form-label">Month Label</label>

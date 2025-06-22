@@ -17,6 +17,13 @@ class ServiceZenkit:
 
         self.items_per_page = int(env["ZENKIT_ITEMS_PER_PAGE"])
 
+    def check_token_auth(self):
+        url = self.base_url + "/users/me"
+        response = requests.get(url, headers=self.headers)
+        if response.status_code == 200:
+            return True
+        return False
+
     def get_list_of_lists(self):
         url = self.base_url + "/users/me/workspacesWithLists"
         response = requests.get(url, headers=self.headers)
