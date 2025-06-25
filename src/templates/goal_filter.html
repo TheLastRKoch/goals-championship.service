@@ -20,7 +20,7 @@
                                         placeholder="Search for projects..." autocomplete="off">
                                     <ul class="dropdown-menu w-100" id="projectDropdown">
                                         {% for project in project_list %}
-                                            <li><a class="dropdown-item" href="#" data-project="{{project.name}}">{{project.name}}</a></
+                                            <li><a class="dropdown-item" href="#" data-project="{{project.shortId}}">{{project.name}}</a></
                                         {% endfor %}
                                     </ul>
                                 </div>

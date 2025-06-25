@@ -54,8 +54,6 @@ class GoalController:
             return render_template("index.html")
 
         # Init services
-        todoist = ServiceTodoist()
-        notion = ServiceNotion()
         formatter = ServiceFormatter()
 
         source = session["source"]
@@ -63,17 +61,25 @@ class GoalController:
         filter_date = request.args.get("filterDate")
         project_list = request.args.get("projectList").split(",")
 
-        # For each project list get the goals
+        match source:
+            case "Todoist":
+                todoist = ServiceTodoist()
+                task_list = todoist.get_task_list(token, filter_date)
+                project_list = todoist.get_project_list(token)
+                task_list = todoist.merge_tasks_projects(task_list, project_list)
+                task_list = formatter.calculate_score(task_list)
 
-        if source == "Todoist":
-            task_list = todoist.get_task_list(token, filter_date)
-            project_list = todoist.get_project_list(token)
-            task_list = todoist.merge_tasks_projects(task_list, project_list)
-            task_list = formatter.calculate_score(task_list)
+            case "Notion":
+                notion = ServiceNotion()
+                task_list = notion.get_task_list(token, filter_date)
+                task_list = formatter.calculate_score(task_list)
 
-        elif source == "Notion":
-            task_list = notion.get_task_list(token, filter_date)
-            task_list = formatter.calculate_score(task_list)
+            case "Zenkit":
+                zenkit = ServiceZenkit(token)
+                task_list = []
+                for project_id in project_list:
+                    task_list += zenkit.get_entry_list_per_list(project_id, filter_date)
+                task_list = formatter.calculate_score(task_list)
 
         return render_template("goal_list.html", task_list=task_list)
 

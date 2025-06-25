@@ -24,6 +24,20 @@ class ServiceZenkit:
             return True
         return False
 
+    def get_column_names(self, list_short_id):
+        url = f"{self.base_url}/lists/{list_short_id}/entries/filter"
+
+        payload = {"limit": 1}
+        response = requests.post(url, headers=self.headers, json=payload)
+        response.raise_for_status()
+
+        # Format responser
+        column_list = self.jmespath.expression(
+            env["ZENKIT_GET_COLUMNS_QUERY"], response.json()
+        )
+
+        return [item.split("_")[0] for item in column_list]
+
     def get_list_of_lists(self):
         url = self.base_url + "/users/me/workspacesWithLists"
         response = requests.get(url, headers=self.headers)
@@ -32,7 +46,7 @@ class ServiceZenkit:
         # Format the request
         return self.jmespath.expression(env["ZENKIT_LIST_QUERY"], response.json())
 
-    def get_entry_list_per_list(self, list_short_id, start_date):
+    def get_entry_list_per_list(self, list_short_id, start_date, column_list):
         skip = 0
         keep = True
         url = f"{self.base_url}/lists/{list_short_id}/entries/filter"
@@ -49,6 +63,9 @@ class ServiceZenkit:
 
         # Format response
         return self.jmespath.expression(
-            env["ZENKIT_ENTRIES_QUERY"].replace("@{selected_date}", start_date),
+            env["ZENKIT_ENTRIES_QUERY"]
+            .replace("@{selected_date}", start_date)
+            .replace("@{status_column}", column_list[0])
+            .replace("@{project_column}", column_list[1]),
             entry_list,
         )
