@@ -65,6 +65,8 @@ class GoalController:
             case "Todoist":
                 todoist = ServiceTodoist()
                 task_list = todoist.get_task_list(token, filter_date)
+                if len(task_list) == 0:
+                    return render_template("goal_list.html", task_list=[])
                 project_list = todoist.get_project_list(token)
                 task_list = todoist.merge_tasks_projects(task_list, project_list)
                 task_list = formatter.calculate_score(task_list)
