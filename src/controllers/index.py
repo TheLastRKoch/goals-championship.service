@@ -1,9 +1,12 @@
+from flask import Blueprint, render_template, redirect, session
 from flask.views import MethodView
-from flask import render_template, redirect, session
 
 
-class IndexController(MethodView):
-    def get(self):
+class IndexController:
+    bp = Blueprint("index", __name__, url_prefix="/")
+
+    @bp.route("/", methods=["GET"])
+    def get():
         if "token" in session.keys():
-            return redirect("goals")
+            return redirect("goal")
         return redirect("account/login")
