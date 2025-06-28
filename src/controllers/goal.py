@@ -78,7 +78,10 @@ class GoalController:
                 zenkit = ServiceZenkit(token)
                 task_list = []
                 for project_id in project_list:
-                    task_list += zenkit.get_entry_list_per_list(project_id, filter_date)
+                    column_list = zenkit.get_column_names(project_id)
+                    task_list += zenkit.get_entry_list_per_list(
+                        project_id, filter_date, column_list
+                    )
                 task_list = formatter.calculate_score(task_list)
 
         return render_template("goal_list.html", task_list=task_list)
