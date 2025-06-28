@@ -1,13 +1,14 @@
 from os import environ as env
 
+from flask import Blueprint, render_template, session, redirect, request, Response
+
 from services.formatter import ServiceFormatter
 from services.todoist import ServiceTodoist
 from services.zenkit import ServiceZenkit
 from services.notion import ServiceNotion
 from utils.files import UtilFile
 from utils.dates import UtilsDate
-
-from flask import Blueprint, render_template, session, redirect, request, Response
+from environment import DATE_FORMAT_RESULT
 
 
 class GoalController:
@@ -60,6 +61,8 @@ class GoalController:
         token = session["token"]
         filter_date = request.args.get("filterDate")
         project_list = request.args.get("projectList").split(",")
+        output = request.args.get("output")
+        task_list = []
 
         match source:
             case "Todoist":
@@ -69,12 +72,10 @@ class GoalController:
                     return render_template("goal_list.html", task_list=[])
                 project_list = todoist.get_project_list(token)
                 task_list = todoist.merge_tasks_projects(task_list, project_list)
-                task_list = formatter.calculate_score(task_list)
 
             case "Notion":
                 notion = ServiceNotion()
                 task_list = notion.get_task_list(token, filter_date)
-                task_list = formatter.calculate_score(task_list)
 
             case "Zenkit":
                 zenkit = ServiceZenkit(token)
@@ -84,8 +85,13 @@ class GoalController:
                     task_list += zenkit.get_entry_list_per_list(
                         project_id, filter_date, column_list
                     )
-                task_list = formatter.calculate_score(task_list)
 
+        # Formatting task list
+        task_list = formatter.format_dates(task_list, DATE_FORMAT_RESULT)
+        task_list = formatter.calculate_score(task_list)
+
+        if output == "json":
+            return task_list
         return render_template("goal_list.html", task_list=task_list)
 
     @bp.route("/list/download", methods=["GET"])
