@@ -32,3 +32,9 @@ class ServiceFormatter:
             formatted_date = completed_at_dt.strftime(date_format)
             task["Completed at"] = formatted_date
         return task_list
+
+    def get_start_date(self, month):
+        return f"{datetime.now().year}-{month}-01"
+
+    def get_end_date(self, month):
+        return f"{datetime.now().year}-{month}-31"
