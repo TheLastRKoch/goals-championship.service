@@ -31,49 +31,6 @@ class ServiceZenkit:
 
         return response.json()
 
-    def get_list_columns(self, list_id, element_list):
-        url = f"{self.base_url}/lists/{list_id}/entries/filter/list"
-        due_date_id = [
-            element.get("id")
-            for element in element_list
-            if element.get("resourceRole") == "dueDate"
-        ][0]
-        stage_id = [
-            element.get("id")
-            for element in element_list
-            if element.get("resourceRole") == "stage"
-        ][0]
-        payload = {
-            "filter": {
-                "AND": {
-                    "TERMS": [
-                        {"elementId": due_date_id, "modus": "isEmpty", "negated": True},
-                        {"elementId": stage_id, "modus": "isEmpty", "negated": True},
-                    ]
-                }
-            },
-            "limit": 1,
-        }
-        response = requests.post(url, headers=self.headers, json=payload)
-        response.raise_for_status()
-
-        entry_list = response.json().get("listEntries", [])
-        # Format responser
-        category_columns = self.jmespath.expression(
-            env["ZENKIT_GET_CATEGORY_COLUMNS"], entry_list
-        )
-
-        date_columns = self.jmespath.expression(
-            env["ZENKIT_GET_DATE_COLUMNS"], entry_list
-        )
-
-        return {
-            "status": category_columns[0],
-            "project": category_columns[1],
-            "start_date": date_columns[4],
-            "end_date": date_columns[5],
-        }
-
     def get_list_of_lists(self):
         url = self.base_url + "/users/me/workspacesWithLists"
         response = requests.get(url, headers=self.headers)
@@ -81,6 +38,27 @@ class ServiceZenkit:
 
         # Format the request
         return self.jmespath.expression(env["ZENKIT_LIST_QUERY"], response.json())
+
+    def get_list_columns(self, list_id):
+        url = self.base_url + f"/lists/{list_id}/elements"
+        response = requests.get(url, headers=self.headers)
+        response.raise_for_status()
+
+        columns_dic = {}
+
+        for item in response.json():
+            resource_role = item.get("resourceRole")
+            element_id = item.get("id")
+            uuid = item.get("uuid")
+            column_list += [
+                columns_dic[f"{resource_role}_{record}"] = {
+                        "id": element_id,
+                        "column_name": f"{uuid}_{record}",
+                    }
+                for record in item.get("businessData")
+            ]
+
+        return column_list
 
     def get_entry_list_per_list(
         self, list_id, column_list, element_list, start_date, end_date
