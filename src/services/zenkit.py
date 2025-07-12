@@ -31,6 +31,16 @@ class ServiceZenkit:
 
         return response.json()
 
+    def get_done_stage(self, list_id):
+        url = self.base_url + f"/lists/{list_id}/elements"
+        response = requests.get(url, headers=self.headers)
+        response.raise_for_status()
+
+        return self.jmespath.expression(
+            env["ZENKIT_GET_DONE_CATEGORY"],
+            response.json(),
+        )
+
     def get_list_of_lists(self):
         url = self.base_url + "/users/me/workspacesWithLists"
         response = requests.get(url, headers=self.headers)
@@ -50,32 +60,26 @@ class ServiceZenkit:
             resource_role = item.get("resourceRole")
             element_id = item.get("id")
             uuid = item.get("uuid")
-            column_list += [
-                columns_dic[f"{resource_role}_{record}"] = {
+
+            columns_dic.update(
+                {
+                    f"{resource_role}_{record}": {
                         "id": element_id,
                         "column_name": f"{uuid}_{record}",
                     }
-                for record in item.get("businessData")
-            ]
-
-        return column_list
+                    for record in item.get("businessData", [])
+                }
+            )
+        return columns_dic
 
     def get_entry_list_per_list(
-        self, list_id, column_list, element_list, start_date, end_date
+        self, list_id, column_list, done_category_id, start_date, end_date
     ):
         skip = 0
         keep = True
-        due_date_id = [
-            element.get("id")
-            for element in element_list
-            if element.get("resourceRole") == "dueDate"
-        ][0]
-        stage_id = [
-            element.get("id")
-            for element in element_list
-            if element.get("resourceRole") == "stage"
-        ][0]
-        url = f"{self.base_url}/lists/{list_id}/entries/filter/list"
+        due_date_id = column_list.get("dueDate_date").get("id")
+        stage_id = column_list.get("stage_categories_sort").get("id")
+        url = f"{self.base_url}/lists/{list_id}/entries/filter"
         entry_list = []
 
         while keep:
@@ -90,7 +94,7 @@ class ServiceZenkit:
                                 "elementId": stage_id,
                                 "modus": "equals",
                                 "negated": False,
-                                "filterCategories": [15058603],
+                                "filterCategories": [done_category_id],
                             },
                             {
                                 "elementId": due_date_id,
@@ -109,15 +113,15 @@ class ServiceZenkit:
 
             response = requests.post(url, headers=self.headers, json=payload)
             response.raise_for_status()
-            if response.json().get("listEntries") == []:
+            if response.json() == []:
                 keep = False
             skip += self.items_per_page
-            entry_list += response.json().get("listEntries")
+            entry_list += response.json()
 
         # Format response
         return self.jmespath.expression(
             env["ZENKIT_ENTRIES_QUERY"]
-            .replace("@{due_date}", column_list.get("start_date"))
-            .replace("@{project}", column_list.get("project")),
+            .replace("@{due_date}", column_list.get("dueDate_date").get("column_name"))
+            .replace("@{project}", column_list.get("tags_categories_sort").get("column_name")),
             entry_list,
         )
