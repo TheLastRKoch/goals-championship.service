@@ -49,7 +49,7 @@ def get_task_list(filter_date, project_list):
                 )
 
     # Formatting task list
-    # task_list = formatter.format_dates(task_list, DATE_FORMAT_RESULT)
+    task_list = formatter.format_dates(task_list, DATE_FORMAT_RESULT)
     return formatter.calculate_score(task_list)
 
 
