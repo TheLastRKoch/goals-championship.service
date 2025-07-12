@@ -24,19 +24,22 @@ class ServiceZenkit:
             return True
         return False
 
-    def get_column_names(self, list_short_id):
-        url = f"{self.base_url}/lists/{list_short_id}/entries/filter"
-
-        payload = {"limit": 1}
-        response = requests.post(url, headers=self.headers, json=payload)
+    def get_list_element(self, list_id):
+        url = self.base_url + f"/lists/{list_id}/elements"
+        response = requests.get(url, headers=self.headers)
         response.raise_for_status()
 
-        # Format responser
-        column_list = self.jmespath.expression(
-            env["ZENKIT_GET_COLUMNS_QUERY"], response.json()
-        )
+        return response.json()
 
-        return [item.split("_")[0] for item in column_list]
+    def get_done_stage(self, list_id):
+        url = self.base_url + f"/lists/{list_id}/elements"
+        response = requests.get(url, headers=self.headers)
+        response.raise_for_status()
+
+        return self.jmespath.expression(
+            env["ZENKIT_GET_DONE_CATEGORY"],
+            response.json(),
+        )
 
     def get_list_of_lists(self):
         url = self.base_url + "/users/me/workspacesWithLists"
@@ -46,14 +49,68 @@ class ServiceZenkit:
         # Format the request
         return self.jmespath.expression(env["ZENKIT_LIST_QUERY"], response.json())
 
-    def get_entry_list_per_list(self, list_short_id, start_date, column_list):
+    def get_list_columns(self, list_id):
+        url = self.base_url + f"/lists/{list_id}/elements"
+        response = requests.get(url, headers=self.headers)
+        response.raise_for_status()
+
+        columns_dic = {}
+
+        for item in response.json():
+            resource_role = item.get("resourceRole")
+            element_id = item.get("id")
+            uuid = item.get("uuid")
+
+            columns_dic.update(
+                {
+                    f"{resource_role}_{record}": {
+                        "id": element_id,
+                        "column_name": f"{uuid}_{record}",
+                    }
+                    for record in item.get("businessData", [])
+                }
+            )
+        return columns_dic
+
+    def get_entry_list_per_list(
+        self, list_id, column_list, done_category_id, start_date, end_date
+    ):
         skip = 0
         keep = True
-        url = f"{self.base_url}/lists/{list_short_id}/entries/filter"
+        due_date_id = column_list.get("dueDate_date").get("id")
+        stage_id = column_list.get("stage_categories_sort").get("id")
+        url = f"{self.base_url}/lists/{list_id}/entries/filter"
         entry_list = []
 
         while keep:
-            payload = {"limit": self.items_per_page, "skip": skip}
+
+            # TODO
+            # - Get the filter categories for each list
+            payload = {
+                "filter": {
+                    "AND": {
+                        "TERMS": [
+                            {
+                                "elementId": stage_id,
+                                "modus": "equals",
+                                "negated": False,
+                                "filterCategories": [done_category_id],
+                            },
+                            {
+                                "elementId": due_date_id,
+                                "modus": "contains",
+                                "negated": False,
+                                "dateType": 10,
+                                "dateFrom": f"{start_date}T12:00:00.000Z",
+                                "dateTo": f"{end_date}T12:00:00.000Z",
+                            },
+                        ]
+                    }
+                },
+                "limit": self.items_per_page,
+                "skip": skip,
+            }
+
             response = requests.post(url, headers=self.headers, json=payload)
             response.raise_for_status()
             if response.json() == []:
@@ -64,8 +121,7 @@ class ServiceZenkit:
         # Format response
         return self.jmespath.expression(
             env["ZENKIT_ENTRIES_QUERY"]
-            .replace("@{selected_date}", start_date)
-            .replace("@{status_column}", column_list[0])
-            .replace("@{project_column}", column_list[1]),
+            .replace("@{due_date}", column_list.get("dueDate_date").get("column_name"))
+            .replace("@{project}", column_list.get("tags_categories_sort").get("column_name")),
             entry_list,
         )

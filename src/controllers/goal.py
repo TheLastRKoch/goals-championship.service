@@ -17,6 +17,8 @@ def get_task_list(filter_date, project_list):
 
     source = session.get("source")
     token = session.get("token")
+    start_date = formatter.get_start_date(filter_date)
+    end_date = formatter.get_end_date(filter_date)
     task_list = []
 
     match source:
@@ -36,9 +38,14 @@ def get_task_list(filter_date, project_list):
             zenkit = ServiceZenkit(token)
             task_list = []
             for project_id in project_list:
-                column_list = zenkit.get_column_names(project_id)
+                column_list = zenkit.get_list_columns(project_id)
+                done_category_id = zenkit.get_done_stage(project_id)[0].get("id")
                 task_list += zenkit.get_entry_list_per_list(
-                    project_id, filter_date, column_list
+                    list_id=project_id,
+                    column_list=column_list,
+                    done_category_id=done_category_id,
+                    start_date=start_date,
+                    end_date=end_date,
                 )
 
     # Formatting task list

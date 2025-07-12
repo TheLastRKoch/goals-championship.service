@@ -20,7 +20,7 @@
                                         placeholder="Search for projects..." autocomplete="off">
                                     <ul class="dropdown-menu w-100" id="projectDropdown">
                                         {% for project in project_list %}
-                                            <li><a class="dropdown-item" href="#" data-project="{{project.shortId}}">{{project.name}}</a></
+                                            <li><a class="dropdown-item" href="#" data-project="{{project.id}}">{{project.name}}</a></
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -29,9 +29,23 @@
                         {% endif %}
 
                         <div class="mb-5 mt-5">
-                            <label for="filterDate" class="form-label">Month Label</label>
-                            <input type="date" name="filterDate" class="form-control" id="filterDate"
-                                aria-describedby="dateHelp" placeholder="Please select the date to search" value="">
+                        <div class="mb-3">
+                            <label for="monthSelect" class="form-label">Choose a month:</label>
+                            <select name="filterDate" class="form-select" id="filterDate" aria-label="Select month">
+                                <option value="" selected disabled>-- Select a month --</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
                         </div>
                         
                         <button type="submit" class="btn btn-primary">Submit</button>
