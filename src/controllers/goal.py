@@ -24,7 +24,7 @@ def get_task_list(filter_date, project_list):
     match source:
         case "Todoist":
             todoist = ServiceTodoist()
-            task_list = todoist.get_task_list(token, filter_date)
+            task_list = todoist.get_task_list(token, start_date)
             if len(task_list) == 0:
                 return task_list
             project_list = todoist.get_project_list(token)
@@ -39,7 +39,8 @@ def get_task_list(filter_date, project_list):
             task_list = []
             for project_id in project_list:
                 column_list = zenkit.get_list_columns(project_id)
-                done_category_id = zenkit.get_done_stage(project_id)[0].get("id")
+                done_category_id = zenkit.get_done_stage(project_id)[0].get(
+                    "id")
                 task_list += zenkit.get_entry_list_per_list(
                     list_id=project_id,
                     column_list=column_list,
@@ -91,7 +92,8 @@ class GoalController:
     def goal_filter():
 
         session["filter_date"] = request.form.get("filterDate")
-        session["project_list"] = request.form.get("selectedProjects", "").split(",")
+        session["project_list"] = request.form.get("selectedProjects",
+                                                   "").split(",")
 
         return redirect("/goal/list")
 
@@ -121,11 +123,12 @@ class GoalController:
         task_list = get_task_list(filter_date, project_list)
         csv_data = files.json_to_csv(task_list)
         file_name = env["TASK_FILE_NAME"].format(
-            timespan=dates.timestamp(env["FILE_TIMESPAN_FORMAT"])
-        )
+            timespan=dates.timestamp(env["FILE_TIMESPAN_FORMAT"]))
 
         return Response(
             csv_data,
             mimetype="text/csv",
-            headers={"Content-Disposition": f"attachment;filename={file_name}"},
+            headers={
+                "Content-Disposition": f"attachment;filename={file_name}"
+            },
         )
