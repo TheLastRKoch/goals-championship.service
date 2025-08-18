@@ -35,7 +35,7 @@ class ServiceTodoist:
         r = web_request.get(headers, None, url, None)
         return json.loads(r.text)
 
-    def get_task_list(self, token, time_period):
+    def get_task_list(self, token, start_date):
         # Define Services
         web_request = UtilWebRequest()
 
@@ -46,7 +46,7 @@ class ServiceTodoist:
         # Obtain tasks
         limit = int(env["API_LIMIT"])
         offset = 0
-        since = time_period+"T00:00:00"
+        since = start_date+"T00:00:00"
         task_list = []
         while (True):
             url = env["TODOIST_GET_TASK_URL"].format(
@@ -59,7 +59,7 @@ class ServiceTodoist:
             task_list += body["items"]
             offset += limit
             if len(body["items"]) == 0:
-                break
+                return task_list
         return task_list
 
     def merge_tasks_projects(self, task_list, project_list):
