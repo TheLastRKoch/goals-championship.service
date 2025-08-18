@@ -1,0 +1,58 @@
+{% extends "shared/layout.html" %}
+{% block title %}Filter goals{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/projectSelector.css') }}">
+<div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <h1>Please fill the required information</h1>
+                <div class="bg-light p-5 rounded">
+                    <form action="{{ url_for('goal.goal_filter')}}" method="POST">
+
+                        {% if filter_projects %}
+                            <div class="mb-3">
+                                <label for="projectSearch" class="form-label">Projects selection</label>
+                                <div class="selected-projects-container" id="selectedProjectsContainer">
+                                    <div class="text-muted" id="placeholderText">No projects selected. Search and select projects below.</div>
+                                </div>
+                                <div class="search-dropdown">
+                                    <input type="text" class="form-control" id="projectSearch" 
+                                        placeholder="Search for projects..." autocomplete="off">
+                                    <ul class="dropdown-menu w-100" id="projectDropdown">
+                                        {% for project in project_list %}
+                                            <li><a class="dropdown-item" href="#" data-project="{{project.id}}">{{project.name}}</a></
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="selectedProjects" id="selectedProjectsInput" value="">
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-5 mt-5">
+                        <div class="mb-3">
+                            <label for="monthSelect" class="form-label">Choose a month:</label>
+                            <select name="filterDate" class="form-select" id="filterDate" aria-label="Select month">
+                                <option value="" selected disabled>-- Select a month --</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="{{ url_for('static', filename='js/projectSelector.js') }}"></script>
+{% endblock %}

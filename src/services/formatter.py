@@ -1,8 +1,9 @@
+from datetime import datetime
 from os import environ as env
+import json
+
 import pandas as pd
 import jmespath
-import json
-import numpy as np
 
 
 class ServiceFormatter:
@@ -19,6 +20,21 @@ class ServiceFormatter:
 
     def calculate_score(self, task_list):
         task_df = pd.DataFrame(task_list)
-        task_df['Score'] = task_df['Description'].apply(
-            lambda x: self.assign_value(x))
-        return json.loads(task_df.to_json(orient='records'))
+        task_df["Score"] = task_df["Description"].apply(lambda x: self.assign_value(x))
+        return json.loads(task_df.to_json(orient="records"))
+
+    def format_dates(self, task_list, date_format):
+        for task in task_list:
+            task_completed_at = task.get("Completed at")
+            completed_at_dt = datetime.fromisoformat(
+                task_completed_at.replace("Z", "+00:00")
+            )
+            formatted_date = completed_at_dt.strftime(date_format)
+            task["Completed at"] = formatted_date
+        return task_list
+
+    def get_start_date(self, month):
+        return f"{datetime.now().year}-{month}-01"
+
+    def get_end_date(self, month):
+        return f"{datetime.now().year}-{month}-31"
