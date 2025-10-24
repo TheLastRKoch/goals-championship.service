@@ -1,6 +1,6 @@
 # Goals Championship Service
 
-The Goals Championship Service is a user interface application designed to fetch and aggregate goal-tracking data from multiple sources, such as Zenkit, Todoist, and Notion. Its primary purpose is to provide users with a unified view of their project and goal management data, enabling them to process this information and determine their overall level of productivity.
+The Goals Championship Service is a user interface application designed to fetch and aggregate goal-tracking data from multiple sources, such as Zenkit, Todoist, and Notion. Its primary purpose is to provide users with a unified view of their project and goal management data, enabling them to process this information and determine their overall level of productivity
 
 ## Key Features
 
