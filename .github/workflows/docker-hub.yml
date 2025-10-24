@@ -24,4 +24,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/goal-championship-service:${{ github.ref_name }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/goals-championship-service:${{ github.ref_name }}
