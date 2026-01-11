@@ -29,10 +29,10 @@
                         {% endif %}
 
                         <div class="mb-5 mt-5">
-                        <div class="mb-3">
+                        <div class="mb-3 mt-5">
                             <label for="monthSelect" class="form-label">Choose a month:</label>
-                            <select name="filterDate" class="form-select" id="filterDate" aria-label="Select month">
-                                <option value="" selected disabled>-- Select a month --</option>
+                            <select name="filterMonth" class="form-select" id="filterMonth" aria-label="Select month">
+                                <option value="" selected disabled>Select a month</option>
                                 <option value="01">January</option>
                                 <option value="02">February</option>
                                 <option value="03">March</option>
@@ -48,7 +48,21 @@
                             </select>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="mb-3 mt-5">
+                            <label for="yearSelect" class="form-label">Choose a year:</label>
+                            <select name="filterYear" class="form-select" id="filterYear" aria-label="Select year">
+                                <option value="" selected disabled>Select a year</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                 <option value="2024">2024</option>
+                                 <option value="2023">2023</option>
+                                 <option value="2022">2022</option>
+                                 <option value="2021">2021</option>
+                                 <option value="2020">2020</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-5">Submit</button>
                     </form>
                 </div>
             </div>

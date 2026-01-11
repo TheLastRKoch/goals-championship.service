@@ -11,14 +11,14 @@ from utils.dates import UtilsDate
 from environment import DATE_FORMAT_RESULT
 
 
-def get_task_list(filter_date, project_list):
+def get_task_list(filter_month, filter_year, project_list):
     # Init services
     formatter = ServiceFormatter()
 
     source = session.get("source")
     token = session.get("token")
-    start_date = formatter.get_start_date(filter_date)
-    end_date = formatter.get_end_date(filter_date)
+    start_date = formatter.get_start_date(filter_month, filter_year)
+    end_date = formatter.get_end_date(filter_month, filter_year)
     task_list = []
 
     match source:
@@ -32,7 +32,7 @@ def get_task_list(filter_date, project_list):
 
         case "Notion":
             notion = ServiceNotion()
-            task_list = notion.get_task_list(token, filter_date)
+            task_list = notion.get_task_list(token, filter_month)
 
         case "Zenkit":
             zenkit = ServiceZenkit(token)
@@ -67,7 +67,8 @@ class GoalController:
             return render_template("index.html")
 
         # Clean session data
-        session["filter_date"] = ""
+        session["filter_month"] = ""
+        session["filter_year"] = ""
         session["project_list"] = ""
 
         # Get the list of projects
@@ -91,7 +92,8 @@ class GoalController:
     @bp.route("/filter", methods=["POST"])
     def goal_filter():
 
-        session["filter_date"] = request.form.get("filterDate")
+        session["filter_month"] = request.form.get("filterMonth")
+        session["filter_year"] = request.form.get("filterYear")
         session["project_list"] = request.form.get("selectedProjects",
                                                    "").split(",")
 
@@ -102,11 +104,14 @@ class GoalController:
         if "token" not in session:
             return render_template("index.html")
 
-        filter_date = session.get("filter_date")
+        filter_month = session.get("filter_month")
+        filter_year = session.get("filter_year")
         project_list = session.get("project_list", [])
         output = request.args.get("output")
 
-        task_list = get_task_list(filter_date, project_list)
+        task_list = get_task_list(filter_month=filter_month,
+                                  filter_year=filter_year,
+                                  project_list=project_list)
 
         if output == "json":
             return task_list
@@ -118,9 +123,9 @@ class GoalController:
         dates = UtilsDate()
         files = UtilFile()
 
-        filter_date = session.get("filter_date")
+        filter_month = session.get("filter_month")
         project_list = session.get("project_list", [])
-        task_list = get_task_list(filter_date, project_list)
+        task_list = get_task_list(filter_month, project_list)
         csv_data = files.json_to_csv(task_list)
         file_name = env["TASK_FILE_NAME"].format(
             timespan=dates.timestamp(env["FILE_TIMESPAN_FORMAT"]))
