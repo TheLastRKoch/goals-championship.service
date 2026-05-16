@@ -1,3 +1,9 @@
+'''Main application entry point.
+
+This module initializes the Flask application, configures settings,
+and registers the controller blueprints.
+'''
+
 from flask import Flask
 
 from environment import TEMPLATES_PATH, SECRET_KEY, HOSTNAME, PORT, DEBUG_MODE
@@ -19,7 +25,7 @@ app.register_blueprint(goal_controller.bp)
 app.register_blueprint(account_controller.bp)
 app.register_blueprint(index_controller.bp)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(
         host=HOSTNAME,
         port=PORT,
