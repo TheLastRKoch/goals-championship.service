@@ -1,31 +1,34 @@
+/**
+ * Styles for the project selector component.
+ */
 .selected-projects-container {
-            min-height: 60px;
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            background-color: #f8f9fa;
-            margin-bottom: 1rem;
-        }
-        
-        .project-pill {
-            margin: 0.25rem;
-            display: inline-block;
-        }
-        
-        .search-dropdown {
-            position: relative;
-        }
-        
-        .dropdown-menu.show {
-            display: block;
-        }
-        
-        .dropdown-item:hover {
-            background-color: #e9ecef;
-        }
-        
-        .no-results {
-            padding: 0.5rem 1rem;
-            color: #6c757d;
-            font-style: italic;
-        }
+  min-height: 60px;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  margin-bottom: 1rem;
+}
+
+.project-pill {
+  margin: 0.25rem;
+  display: inline-block;
+}
+
+.search-dropdown {
+  position: relative;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #e9ecef;
+}
+
+.no-results {
+  padding: 0.5rem 1rem;
+  color: #6c757d;
+  font-style: italic;
+}

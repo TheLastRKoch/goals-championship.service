@@ -1,24 +1,24 @@
-{% extends "shared/layout.html" %} {% block title %}Filter goals{% endblock %}
+{% extends 'shared/layout.html' %}
+{% block title %}Goal list{% endblock %}
 {% block content %}
-<div id="alertContainer"></div>
+<div id="alertContainer" class="container mt-3"></div>
 <div class="container mt-4">
   {% if task_list | length > 0 %}
   <div class="row">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="col d-flex justify-content-between align-items-center mb-4">
       <h1 class="mb-0">Goal list</h1>
       <div class="d-flex gap-2">
         <button id="copyBtn" onclick="copyTableContent()" class="btn btn-outline-primary">
           <i class="bi bi-clipboard"></i> Copy
         </button>
-        <a type="button" onclick="showAlert('Table downloaded successfuly')" href="/goal/list/download"
-          class="btn btn-outline-success">Download</a>
+        <a href="/goal/list/download" class="btn btn-outline-success">Download</a>
       </div>
     </div>
   </div>
-  <div class="row mt-2">
-    <div class="table-responsive">
-      <table id="taskList" class="table table-striped">
-        <thead>
+  <div class="row">
+    <div class="col table-responsive">
+      <table id="taskList" class="table table-hover table-striped">
+        <thead class="table-dark">
           <tr>
             <th>Completed at</th>
             <th>Description</th>
@@ -29,24 +29,28 @@
         <tbody>
           {% for task in task_list %}
           <tr>
-            <td>{{ task["Completed at"] }}</td>
-            <td>{{ task["Description"] }}</td>
-            <td>{{ task["Project"] }}</td>
-            <td>{{ task["Score"] }}</td>
+            <td>{{ task['Completed at'] }}</td>
+            <td>{{ task['Description'] }}</td>
+            <td>{{ task['Project'] }}</td>
+            <td><span class="badge bg-secondary">{{ task['Score'] }}</span></td>
           </tr>
-          {% endfor%}
+          {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
   {% else %}
-  <div class="col-lg-8 px-0">
-    <p class="fs-5">
-      No goals were found for with your search criteria. Please try again.
-    </p>
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="alert alert-info">
+        <p class="mb-0 fs-5">
+          No goals were found with your search criteria. Please try again.
+        </p>
+      </div>
+    </div>
   </div>
   {% endif %}
 </div>
-<script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/alerts.js') }}"></script>
 <script src="{{ url_for('static', filename='js/copyTableContent.js') }}"></script>
 {% endblock %}
