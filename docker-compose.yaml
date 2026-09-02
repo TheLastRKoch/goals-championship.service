@@ -1,0 +1,8 @@
+services:
+  service:
+    build: .
+    container_name: opentasks-service
+    ports:
+      - "9007:8080"
+    env_file:
+      - ./.env
